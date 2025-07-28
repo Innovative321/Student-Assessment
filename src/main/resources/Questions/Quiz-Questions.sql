@@ -1,5 +1,5 @@
 -- Networking part-1
-INSERT INTO tech_assessment.questions (question, option1, option2, option3, option4, correct_answers, category, is_multiple_choice) VALUES
+INSERT INTO questions (question, option1, option2, option3, option4, correct_answers, category, is_multiple_choice) VALUES
 ('Which of the following transmission directions listed is not a legitimate channel?', 'Simplex', 'Half Duplex', 'Full Duplex', 'Double Duplex', 3, 'networking', 0),
 ('The location of a resource on the internet is given by its?', 'Protocol', 'URL', 'E-mail address', 'ICQ', 1, 'networking', 0),
 ('Communication between a computer and a keyboard involves transmission?', 'simplex', 'half-duplex', 'full-duplex', 'automatic', 0, 'networking', 0),
@@ -20,7 +20,7 @@ INSERT INTO tech_assessment.questions (question, option1, option2, option3, opti
 ('The physical layer is concerned with ___________', 'bit-by-bit delivery', 'process to process delivery', 'application to application delivery', 'port to port delivery', 0, 'networking', 0);
 
 -- Networking part-2 
-INSERT INTO tech_assessment.questions (question, option1, option2, option3, option4, correct_answers, category, is_multiple_choice) VALUES
+INSERT INTO questions (question, option1, option2, option3, option4, correct_answers, category, is_multiple_choice) VALUES
 ('Which transmission media provides the highest transmission speed in a network?', 'coaxial cable', 'twisted pair cable', 'optical fiber', 'electrical cable', 2, 'networking', 0),
 ('The physical layer translates logical communication requests from the ______ into hardware specific operations.', 'data link layer', 'network layer', 'transport layer', 'application layer', 0, 'networking', 0),
 ('The data link layer takes the packets from _________ and encapsulates them into frames for transmission.', 'network layer', 'physical layer', 'transport layer', 'application layer', 0, 'networking', 0),
@@ -55,7 +55,7 @@ INSERT INTO tech_assessment.questions (question, option1, option2, option3, opti
 ('Which of the following is a disadvantage of a star topology?', 'Centralized control', 'Failure of the hub', 'Cost', 'All of the above', 3, 'networking', 0);
 
 -- networking part-3
-INSERT INTO tech_assessment.questions (question, option1, option2, option3, option4, correct_answers, category, is_multiple_choice) VALUES
+INSERT INTO questions (question, option1, option2, option3, option4, correct_answers, category, is_multiple_choice) VALUES
 ('In a ring topology, if one node fails __________.', 'The network will continue to function', 'The network will be affected', 'Only that node will be affected', 'None of these', 1, 'networking', 0),
 ('The transmission medium which can carry more data is __________.', 'Twisted pair', 'Coaxial cable', 'Optical fiber', 'All of these', 2, 'networking', 0),
 ('The protocol which is used to send e-mail is __________.', 'SMTP', 'FTP', 'HTTP', 'SNMP', 0, 'networking', 0),
@@ -85,7 +85,7 @@ INSERT INTO tech_assessment.questions (question, option1, option2, option3, opti
 ('Which of the following cables uses light to transmit data?', 'Cat 6 cable', 'Fiber optic cable', 'Coaxial cable', 'Twisted pair cable', 1, 'networking', 0);
 
 -- Linux Questions
-INSERT INTO tech_assessment.questions (question, option1, option2, option3, option4, correct_answers, category, is_multiple_choice) VALUES
+INSERT INTO questions (question, option1, option2, option3, option4, correct_answers, category, is_multiple_choice) VALUES
 ("Which command is commonly used to display all mounted file systems and their respective usage in Linux?", "lsblk", "ls -ltr", "df -Th", "free -m", 2, "linux", 0),
 ("What is the primary purpose of the /etc/fstab file in Linux?", "It stores system wide environment variables and startup scripts", "It lists the available filesystem and their associated options for mounting at boot time", "It contains configurations settings for network interfaces and routing tables", "It stores user account information, including username and passwords", 1, "linux", 0),
 ("To grant Davis (and only Davis) full access to John's home directory, which command would you use without losing John's access?", "chmod 777 /home/john", "setfacl -m u:davis:rwx /home/john", "chown davis:davis /home/john", NULL, 1, "linux", 0),
@@ -106,7 +106,7 @@ INSERT INTO tech_assessment.questions (question, option1, option2, option3, opti
 
 
 -- C & CPP questions part-1
-INSERT INTO tech_assessment.questions (question, option1, option2, option3, option4, correct_answers, is_multiple_choice, category) VALUES
+INSERT INTO questions (question, option1, option2, option3, option4, correct_answers, is_multiple_choice, category) VALUES
 ("What is the correct syntax to include a header file in C?", "#include <header.h>", "#include 'header.h'", "#include <header>", "#include header.h", 0, 0, "c&cpp"),
 ("Which of the following is a valid variable declaration in C?", "int 1number;", "int number1;", "int number one;", "int number#1;", 1, 0, "c&cpp"),
 ("What does the 'printf' function return?", "int", "void", "char", "float", 0, 0, "c&cpp"),
@@ -127,7 +127,7 @@ INSERT INTO tech_assessment.questions (question, option1, option2, option3, opti
 ("Which of the following is NOT a valid C++ data type?", "int", "float", "double", "decimal", 3, 0, "c&cpp");
 
 -- C & CPP Part-2
-INSERT INTO tech_assessment.questions (question, option1, option2, option3, option4, correct_answers, is_multiple_choice, category) VALUES
+INSERT INTO questions (question, option1, option2, option3, option4, correct_answers, is_multiple_choice, category) VALUES
 ("What does the 'sizeof' operator do?", "Returns the size of a variable", "Returns the size of a data type", "Both 1 and 2", "None of the above", 2, 0, "c&cpp"),
 ("Which of the following are valid data types in C?", "int", "float", "char", "string", 0, 1, "c&cpp"),
 ("In C++, which of the following keywords are used for exception handling?", "try", "catch", "throw", "finally", 0, 1, "c&cpp"),
@@ -165,7 +165,7 @@ INSERT INTO tech_assessment.questions (question, option1, option2, option3, opti
 ("Which operator is used to dereference a pointer?", "*", "&", "->", "^", 0, 0, "c&cpp");
 
 -- AWS questions
-INSERT INTO tech_assessment.questions (question, option1, option2, option3, option4, correct_answers, category, is_multiple_choice) VALUES
+INSERT INTO questions (question, option1, option2, option3, option4, correct_answers, category, is_multiple_choice) VALUES
 ('True or False? Each AWS region is designed to be completely isolated from the other AWS regions', 'True', 'False', '', '', 0, 'aws', 0),
 ('True or False? Each region has a minimum number of 1 availability zones and the maximum is 4', 'True', 'False', '', '', 1, 'aws', 0),
 ('What considerations to take when choosing an AWS region for running a new application?', 'The region with most number of Availability Zones', 'The region closest to the AWS global headquarters', 'The region that minimizes latency for your users and complies with data residency regulations', 'The region with the cheapest EC2 pricing overall', 2, 'aws', 0),
@@ -215,7 +215,7 @@ INSERT INTO tech_assessment.questions (question, option1, option2, option3, opti
 ('You need persistent shared storage between your containers where some are running in Fargate and some in ECS EC2. The storage should be accessible across multiple Availability Zones. What would you use?', 'Amazon EBS volumes', 'Docker local volumes', 'Amazon S3 buckets', 'Amazon EFS file system', 3, 'aws', 0);
 
 -- linux part-2
-INSERT INTO tech_assessment.questions (question, option1, option2, option3, option4, correct_answers, category, is_multiple_choice) VALUES
+INSERT INTO questions (question, option1, option2, option3, option4, correct_answers, category, is_multiple_choice) VALUES
 ('What command is used to display the disk usage of files and directories in a human-readable format?', 'df -h', 'du -h', 'ls -lh', 'fdisk -l', 1, 'linux', 0),
 ("Which command allows you to change the permissions of a file named 'data.txt' to read and write for the owner only?", 'chmod 600 data.txt', 'chmod 700 data.txt', 'chmod 644 data.txt', 'chmod 755 data.txt', 0, 'linux', 0),
 ('What is the purpose of the /etc/fstab file in Linux?', 'Stores user passwords', 'Defines filesystem mount points', 'Lists active processes', 'Configures network interfaces', 1, 'linux', 0),
@@ -268,7 +268,7 @@ INSERT INTO tech_assessment.questions (question, option1, option2, option3, opti
 ('What does the `history` command show?', 'List of previous commands', 'System logs', 'File history', 'All of the above', 0, 'linux', 0);
 
 -- devops part-1
-INSERT INTO tech_assessment.questions 
+INSERT INTO questions 
 (question, option1, option2, option3, option4, correct_answers, category, is_multiple_choice) VALUES
 ("How do you create and switch to a new branch called 'feature-x' in Git?", 'git branch feature-x', 'git checkout -b feature‑x', 'git switch feature‑x', 'git branch ‑c feature‑x', 1, 'devops', 0),
 ("How do you resolve a merge conflict in Git?", "Use 'git merge --abort'", "Edit the conflicting files, then 'git add' and 'git commit'", "Use 'git rebase --continue'", 'Delete the conflicting branch', 1, 'devops', 0),
@@ -323,7 +323,7 @@ INSERT INTO tech_assessment.questions
 ('What is a key benefit of running open‑source DevOps tools like Jenkins on AWS EC2 instances?', 'Limited scalability due to fixed instance sizes', 'Ability to scale compute resources dynamically to handle varying CI/CD workloads', 'Requirement for manual hardware maintenance', 'Incompatibility with open‑source plugins', 1, 'devops', 0);
 
 -- aws question part‑2
-INSERT INTO tech_assessment.questions 
+INSERT INTO questions 
 (question, option1, option2, option3, option4, correct_answers, category, is_multiple_choice) VALUES
 ('What does EC2 stand for in AWS?', 'Elastic Cloud Compute', 'Elastic Compute Cloud', 'Elastic Cloud Cluster', 'Elastic Control Cloud', 1, 'aws', 0),
 ('Which AWS service is used for object storage?', 'EBS', 'EC2', 'S3', 'RDS', 2, 'aws', 0),
