@@ -42,7 +42,7 @@ function fetchQuestions() {
         window.location.href = "index.html";
         return;
     }
-
+	resetTestData();
 	fetch(`/questions/category/${category}`)
 	    .then(response => response.json())
 	    .then(data => {
