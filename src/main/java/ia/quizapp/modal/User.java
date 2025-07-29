@@ -24,6 +24,15 @@ public class User {
     @NotBlank(message = "Phone number is required")
     @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be exactly 10 digits")
     private String phone;
+
+    private String category;
+    
+    public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
     
     private int score;
 	public Long getId() {
