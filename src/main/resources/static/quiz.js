@@ -9,7 +9,7 @@ let testStarted = localStorage.getItem("testStarted") === "false";
 document.addEventListener("DOMContentLoaded", function () {
     const testStartedFlag = localStorage.getItem("testStarted");
 
-    if (testStartedFlag === "false" || testStartedFlag === null) {
+    if (!(testStartedFlag === "false" || testStartedFlag === null)) {
         resetTestData();
     } else {
         const savedTime = parseInt(localStorage.getItem("remainingTime"));
@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         showQuestion();
     } else {
+	resetTestData();
         fetchQuestions();
     }
 });
