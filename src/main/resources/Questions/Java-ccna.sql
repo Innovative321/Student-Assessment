@@ -75,7 +75,7 @@ INSERT INTO questions (id, question, option1, option2, option3, option4, correct
 (73, 'Which of the following is the correct way to declare an array in Java?', 'int arr[] = new int[5];', 'int arr = new int[5];', 'int[] arr = int[5];', 'array int arr = new int[5];', '0', 0, 'java');
 
 -- CCNA 
-INSERT INTO ccna_questions (id, correct_answers, is_multiple_choice, option1, option2, option3, option4, question, category) VALUES
+INSERT INTO questions (id, correct_answers, is_multiple_choice, option1, option2, option3, option4, question, category) VALUES
 (75, '1', 0, 'Forward packets within a local network', 'Route packets between different networks', 'Filter malicious traffic', 'Convert IP addresses to MAC addresses', 'What is the primary function of a router in a network?', 'ccna'),
 (76, '1', 0, 'Layer 2', 'Layer 3', 'Layer 4', 'Layer 7', 'Which layer of the OSI model do routers primarily operate on?', 'ccna'),
 (77, '1', 0, 'Layer 2 switches operate on IP addresses, Layer 3 switches operate on MAC addresses', 'Layer 2 switches operate on MAC addresses, Layer 3 switches operate on IP addresses', 'Layer 2 switches use VLANs, Layer 3 switches do not', 'Layer 3 switches are slower than Layer 2 switches', 'What is the primary difference between a Layer 2 and a Layer 3 switch?', 'ccna'),
