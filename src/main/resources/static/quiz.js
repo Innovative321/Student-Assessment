@@ -4,22 +4,23 @@ let userResponses = JSON.parse(localStorage.getItem("userResponses") || "{}");
 let reviewQuestions = JSON.parse(localStorage.getItem("reviewQuestions") || "{}");
 let timer;
 let totalTime = 60 * 60; // 60 minutes in seconds
-let testStarted = localStorage.getItem("testStarted") === "false";
 
 document.addEventListener("DOMContentLoaded", function () {
     const testStartedFlag = localStorage.getItem("testStarted");
+    console.log("testStartedFlag:", testStartedFlag);
 
-    if (!(testStartedFlag === "false" || testStartedFlag === null)) {
+    // ✅ CASE 1: New test (no data or manually restarted)
+    if (testStartedFlag === null || testStartedFlag === "false") {
+        console.log("Starting new test...");
         resetTestData();
-    } else {
-        const savedTime = parseInt(localStorage.getItem("remainingTime"));
-        totalTime = isNaN(savedTime) ? 60 * 60 : savedTime;
-        startGlobalTimer();
+        fetchQuestions();
+        return;
     }
 
+    // ✅ CASE 2: Returning from review or already in-progress test
     const savedQuestions = localStorage.getItem("quizQuestions");
-
     if (savedQuestions) {
+        console.log("Restoring existing quiz data...");
         questions = JSON.parse(savedQuestions);
 
         const redirectIndex = localStorage.getItem("redirectToQuestion");
@@ -28,129 +29,116 @@ document.addEventListener("DOMContentLoaded", function () {
             localStorage.removeItem("redirectToQuestion");
         }
 
+        const savedTime = parseInt(localStorage.getItem("remainingTime"));
+        totalTime = isNaN(savedTime) ? 60 * 60 : savedTime;
+        startGlobalTimer();
         showQuestion();
-    } else {
-	resetTestData();
-        fetchQuestions();
-    }
-});
-
-function fetchQuestions() {
-    const category = localStorage.getItem("userCategory"); // ✅ Read category from localStorage
-
-    if (!category) {
-        alert("No category found. Please start again from the homepage.");
-        window.location.href = "index.html";
         return;
     }
-	resetTestData();
-	fetch(`/questions/category/${category}`)
-	    .then(response => response.json())
-	    .then(data => {
-			const storedQuestions = localStorage.getItem("quizQuestions");
 
-	           if (storedQuestions) {
-	               questions = JSON.parse(storedQuestions);
-	           } else {
-	               questions = shuffleArray(data).slice(0, 50);
-	               localStorage.setItem("quizQuestions", JSON.stringify(questions));
-	           }
-	        /*if (!Array.isArray(data)) {
-	            throw new Error("Response is not a valid question array.");
-	        }
+    // ✅ CASE 3: Fallback if data is missing
+    console.log("No saved questions found, fetching fresh...");
+    resetTestData();
+    fetchQuestions();
+});
 
-	        questions = shuffleArray(data).slice(0, 50);
-	        localStorage.setItem("quizQuestions", JSON.stringify(questions));
-	        */
-		   startTest();
-	        showQuestion();
-	    })
-	    .catch(error => {
-	        console.error("Error fetching questions:", error);
-	        Swal.fire({
-	            icon: 'error',
-	            title: 'Failed to Load Questions',
-	            text: 'Please try again or contact support.',
-	            confirmButtonColor: '#d33'
-	        });
-	    });
+// ✅ Fetch Questions (only for fresh start)
+function fetchQuestions() {
+    const category = localStorage.getItem("userCategory"); // from homepage
+    if (!category) {
+        Swal.fire("Error", "No category found. Please start again.", "error")
+            .then(() => window.location.href = "index.html");
+        return;
+    }
 
+    console.log("Fetching Questions for category:", category);
+    fetch(`/questions/category/${category}`)
+        .then(response => response.json())
+        .then(data => {
+            questions = shuffleArray(data).slice(0, 50);
+            localStorage.setItem("quizQuestions", JSON.stringify(questions));
+            startTest();
+            showQuestion();
+        })
+        .catch(error => {
+            console.error("Error fetching questions:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Failed to Load Questions',
+                text: 'Please try again or contact support.',
+                confirmButtonColor: '#d33'
+            });
+        });
 }
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
+        const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
 }
 
+// ✅ Display Question
 function showQuestion() {
-	
-	console.log("Current question index:", currentQuestionIndex);
-	localStorage.setItem("currentQuestionIndex", currentQuestionIndex);
-		
+    console.log("Showing question index:", currentQuestionIndex);
+    localStorage.setItem("currentQuestionIndex", currentQuestionIndex);
+
     if (!questions || questions.length === 0) {
         document.getElementById("question").innerText = "No questions available.";
         return;
     }
 
     if (currentQuestionIndex >= questions.length) {
-		console.warn("Invalid currentQuestionIndex, resetting to 0.");
         currentQuestionIndex = 0;
     }
 
-    let questionData = questions[currentQuestionIndex];
-	if (!questionData) {
-	        console.error("Question data not found for index", currentQuestionIndex);
-	        return;
-	    }
-		
-    let questionText = `${currentQuestionIndex + 1}. ${questionData.question}`;
+    const questionData = questions[currentQuestionIndex];
+    if (!questionData) {
+        console.error("Question not found for index", currentQuestionIndex);
+        return;
+    }
 
-	if (questionData.multipleChoice) {
-		let requiredCount = 1;
-		if (questionData.correctAnswers) {
-		    if (Array.isArray(questionData.correctAnswers)) {
-		        requiredCount = questionData.correctAnswers.length;
-		    } else if (typeof questionData.correctAnswers === "string") {
-		        requiredCount = questionData.correctAnswers.split(",").length;
-		    }
-		}
-		const note = document.createElement("p");
-	    note.style.fontWeight = "bold";
-	    note.style.fontSize = "15px";
-	    questionText += ` (Select ${requiredCount})`;
-	}
+    let questionText = `${currentQuestionIndex + 1}. ${questionData.question}`;
+    if (questionData.multipleChoice) {
+        let requiredCount = 1;
+        if (questionData.correctAnswers) {
+            if (Array.isArray(questionData.correctAnswers)) {
+                requiredCount = questionData.correctAnswers.length;
+            } else if (typeof questionData.correctAnswers === "string") {
+                requiredCount = questionData.correctAnswers.split(",").length;
+            }
+        }
+        questionText += ` (Select ${requiredCount})`;
+    }
 
     document.getElementById("question").innerText = questionText;
-
     const optionsContainer = document.getElementById("options");
     optionsContainer.innerHTML = "";
 
-    let inputType = questionData.multipleChoice ? "checkbox" : "radio";
-    let inputName = `question_${questionData.id}`;
-	
-	let maxSelectable = 1; // Default to 1 for single-choice
-	if (questionData.correctAnswers) {
-	    if (Array.isArray(questionData.correctAnswers)) {
-	        maxSelectable = questionData.correctAnswers.length;
-	    } else if (typeof questionData.correctAnswers === "string") {
-	        maxSelectable = questionData.correctAnswers.split(",").length;
-	    }
-	}
+    const inputType = questionData.multipleChoice ? "checkbox" : "radio";
+    const inputName = `question_${questionData.id}`;
+
+    let maxSelectable = 1;
+    if (questionData.correctAnswers) {
+        if (Array.isArray(questionData.correctAnswers)) {
+            maxSelectable = questionData.correctAnswers.length;
+        } else if (typeof questionData.correctAnswers === "string") {
+            maxSelectable = questionData.correctAnswers.split(",").length;
+        }
+    }
 
     ["option1", "option2", "option3", "option4"].forEach(optionKey => {
         if (questionData[optionKey]) {
-            let optionDiv = document.createElement("div");
+            const optionDiv = document.createElement("div");
             optionDiv.classList.add("form-check", "p-1");
 
-            let optionLabel = document.createElement("label");
-            optionLabel.classList.add("form-check-label", "d-flex", "align-items-center");
-            optionLabel.style.cursor = "pointer";
-            optionLabel.style.gap = "8px";
+            const label = document.createElement("label");
+            label.classList.add("form-check-label", "d-flex", "align-items-center");
+            label.style.cursor = "pointer";
+            label.style.gap = "8px";
 
-            let input = document.createElement("input");
+            const input = document.createElement("input");
             input.type = inputType;
             input.name = inputType === "radio" ? inputName : `${inputName}[]`;
             input.value = questionData[optionKey];
@@ -159,52 +147,43 @@ function showQuestion() {
             input.style.width = "1.2rem";
             input.style.height = "1.2rem";
 
-            input.addEventListener("change", () =>
-                handleCheckboxSelection(inputName, maxSelectable, questionData.id, inputType, input.value, input.checked)
-            );
-
+            // Restore user selection
             if (questionData.multipleChoice && Array.isArray(userResponses[questionData.id])) {
                 input.checked = userResponses[questionData.id].includes(questionData[optionKey]);
             } else if (userResponses[questionData.id] === questionData[optionKey]) {
                 input.checked = true;
             }
 
-            optionLabel.appendChild(input);
-            optionLabel.appendChild(document.createTextNode(` ${questionData[optionKey]}`));
-			optionLabel.addEventListener("mouseenter", () => {
-                optionLabel.style.color = "#007bff";
-            });
-            optionLabel.addEventListener("mouseleave", () => {
-                optionLabel.style.color = "";
-            });
-			optionDiv.appendChild(optionLabel);
+            input.addEventListener("change", () =>
+                handleCheckboxSelection(inputName, maxSelectable, questionData.id, inputType, input.value, input.checked)
+            );
+
+            label.appendChild(input);
+            label.appendChild(document.createTextNode(` ${questionData[optionKey]}`));
+            optionDiv.appendChild(label);
             optionsContainer.appendChild(optionDiv);
         }
     });
 
-    let reviewCheckbox = document.getElementById("markReview");
+    const reviewCheckbox = document.getElementById("markReview");
     if (reviewCheckbox) {
         reviewCheckbox.checked = reviewQuestions[questionData.id] || false;
     }
 }
 
 function handleCheckboxSelection(inputName, maxSelectable, questionId, inputType, value, isChecked) {
-    let selectedOptions = document.querySelectorAll(`input[name='${inputName}[]']:checked`);
+    const selectedOptions = document.querySelectorAll(`input[name='${inputName}[]']:checked'`);
 
     if (selectedOptions.length >= maxSelectable) {
-        document.querySelectorAll(`input[name='${inputName}[]']:not(:checked')`).forEach(option => {
-            option.disabled = true;
-        });
+        document.querySelectorAll(`input[name='${inputName}[]']:not(:checked')`).forEach(opt => opt.disabled = true);
     } else {
-        document.querySelectorAll(`input[name='${inputName}[]']`).forEach(option => {
-            option.disabled = false;
-        });
+        document.querySelectorAll(`input[name='${inputName}[]']`).forEach(opt => opt.disabled = false);
     }
 
     if (inputType === "checkbox") {
         userResponses[questionId] = userResponses[questionId] || [];
         if (isChecked) {
-            userResponses[questionId].push(value);
+            if (!userResponses[questionId].includes(value)) userResponses[questionId].push(value);
         } else {
             userResponses[questionId] = userResponses[questionId].filter(ans => ans !== value);
         }
@@ -216,21 +195,21 @@ function handleCheckboxSelection(inputName, maxSelectable, questionId, inputType
 }
 
 function saveResponse() {
-    let reviewCheckbox = document.getElementById("markReview");
-    if (!reviewCheckbox) return;
+    const questionData = questions[currentQuestionIndex];
+    if (!questionData) return;
 
-    let questionData = questions[currentQuestionIndex];
-    let selectedOptions = document.querySelectorAll(`input[name="question_${questionData.id}[]"]:checked`);
-    let selectedValues = [...selectedOptions].map(option => option.value);
+    const reviewCheckbox = document.getElementById("markReview");
+    const selectedCheckboxes = document.querySelectorAll(`input[name="question_${questionData.id}[]"]:checked`);
+    const selectedValues = [...selectedCheckboxes].map(opt => opt.value);
 
     if (questionData.multipleChoice) {
         userResponses[questionData.id] = selectedValues;
     } else {
-        let singleSelection = document.querySelector(`input[name="question_${questionData.id}"]:checked`);
-        userResponses[questionData.id] = singleSelection ? singleSelection.value : null;
+        const selectedRadio = document.querySelector(`input[name="question_${questionData.id}"]:checked`);
+        userResponses[questionData.id] = selectedRadio ? selectedRadio.value : null;
     }
 
-    if (reviewCheckbox.checked) {
+    if (reviewCheckbox && reviewCheckbox.checked) {
         reviewQuestions[questionData.id] = questionData;
     } else {
         delete reviewQuestions[questionData.id];
@@ -266,11 +245,12 @@ function goToReview() {
 }
 
 function submitQuiz() {
-    alert("Time is up! Submitting your quiz.");
-    window.location.href = "review.html";
+    Swal.fire("Time is up!", "Your quiz will be submitted automatically.", "warning")
+        .then(() => window.location.href = "review.html");
 }
 
 function resetTestData() {
+    console.log("Resetting all quiz data...");
     localStorage.removeItem("userResponses");
     localStorage.removeItem("reviewQuestions");
     localStorage.removeItem("quizQuestions");
@@ -283,14 +263,10 @@ function resetTestData() {
 }
 
 function startTest() {
-    testStarted = true;
-
-    const savedTime = parseInt(localStorage.getItem("remainingTime"));
-    totalTime = isNaN(savedTime) ? 60 * 60 : savedTime;
-
+    console.log("Starting test...");
+    totalTime = 60 * 60; // reset to full time
     localStorage.setItem("testStarted", "true");
     localStorage.setItem("remainingTime", totalTime);
-
     startGlobalTimer();
 }
 
